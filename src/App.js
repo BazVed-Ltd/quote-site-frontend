@@ -1,42 +1,23 @@
-import React, { Component } from 'react'
-import logo from './favicon.ico'
-import './App.css'
+import React from 'react'
+import {
+  BrowserRouter,
+  Routes,
+  Route
+} from 'react-router-dom'
 
-class App extends Component {
-  state = {
-    data: null
-  }
+import Index from './routes/Index'
+import Chats from './routes/Chats'
+import Chat from './routes/Chat'
 
-  componentDidMount () {
-    this.getQuotes()
-      .then(res => this.setState({ data: res }))
-      .catch(err => console.log(err))
-  }
-
-  getQuotes = async () => {
-    const response = await fetch('/api/quotes')
-    const body = await response.json()
-
-    if (response.status !== 200) {
-      throw Error(body.message)
-    }
-
-    return body
-  }
-
-  render () {
-    return (
-      <div className='App'>
-        <header className='App-header'>
-          <img src={logo} className='App-logo' alt='logo' />
-          <h1 className='App-title'>Добо пожаловать в СЬЛРЖАЛСЧ</h1>
-        </header>
-        <p className='App-intro'>
-          Ok.
-        </p>
-      </div>
-    )
-  }
+export default function App () {
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route path='/' element={<Index />}>
+          <Route index element={<Chats />} />
+          <Route path=':chatId' element={<Chat />} />
+        </Route>
+      </Routes>
+    </BrowserRouter>
+  )
 }
-
-export default App
