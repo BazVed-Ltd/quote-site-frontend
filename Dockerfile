@@ -16,7 +16,9 @@ FROM nginx:latest
 
 COPY --from=build /usr/src/app/build/ /usr/src/app/build/
 
-COPY nginx/nginx.conf /etc/nginx/nginx.conf
+ARG MODE=https
+
+COPY nginx/nginx-${MODE}.conf /etc/nginx/nginx.conf
 
 EXPOSE 80
 
