@@ -1,12 +1,31 @@
 import { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 
+function Attachment(props) {
+  const attachment = props.attachment
+  const type = props.attachment.type
+  if (type === 'photo' || type === 'doc' || type === 'graffiti') {
+    return <img className='object-scale-down w-full h-full align-middle' src={'/' + attachment.filepath} />
+  } else if (type === 'sticker') {
+    return <img className='object-scale-down w-40 h-40 align-middle' src={attachment.filepath} />
+  }
+  else if (type === 'audio_message') {
+    return (
+      <audio controls>
+        <source src={attachment.filepath} type="audio/mp3" />
+      </audio>
+    )
+  }
+  return <span>Unknow type</span>
+}
+
 function Attachments(props) {
+
   return (
     <div className="flex flex-wrap gap-1">
       {props.attachments.map(attachment => {
           return (<li className='relative rounded'>
-            <img className='object-scale-down w-full h-full align-middle' src={attachment.downloaded ? '/' + attachment.filepath : attachment.filepath} />
+            <Attachment attachment={attachment} />
           </li>)
       })}
     </div>
