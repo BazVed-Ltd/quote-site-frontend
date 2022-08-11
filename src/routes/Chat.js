@@ -24,9 +24,9 @@ function Attachments(props) {
   return (
     <div className="flex flex-wrap gap-1">
       {props.attachments.map(attachment => {
-          return (<li className='relative rounded'>
-            <Attachment attachment={attachment} />
-          </li>)
+        return (<li className='relative rounded'>
+          <Attachment attachment={attachment} />
+        </li>)
       })}
     </div>
   )
@@ -43,9 +43,22 @@ function ForwaredMessage(props) {
     fromUrl += 'club' + -fromId
   }
 
+  let needRenderMessageHeader, date;
+  if (
+    props.prevMessage
+    && props.prevMessage.from_id === props.message.from_id
+    && props.message.fwd_messages.length === 0
+  ) {
+    needRenderMessageHeader = false
+  } else {
+    needRenderMessageHeader = true
+  }
+
   return (
     <div>
-      <a className='text-blue-400' href={fromUrl}>{fromBy.name}</a>
+      {needRenderMessageHeader
+        ? <a className='text-blue-400' href={fromUrl}>{fromBy.name}</a>
+        : null}
       <p className='mb-4'>{props.message.text}</p>
       {props.message.attachments.length === 0
         ? null
@@ -60,8 +73,11 @@ function ForwaredMessage(props) {
 function ForwaredMessages(props) {
   return (
     <ul>
-      {props.messages.map((message, index) =>
-        <li key={index}><ForwaredMessage message={message} users={props.users} /></li>)}
+      {props.messages.map((message, index, messages) => {
+        let prevIndex = index - 1
+        let prevMessage = prevIndex >= 0 ? messages[prevIndex] : null
+        return <li key={index}><ForwaredMessage message={message} users={props.users} prevMessage={prevMessage} /></li>
+      })}
     </ul>
   )
 }
@@ -107,7 +123,7 @@ export default function Chat(props) {
   }, [params.chatId])
 
   return (
-    <ul className='flex flex-col max-w-lg mx-auto'>
+    <ul className='flex flex-col max-w-lg px-3 sm:px-0 mx-auto'>
       {state.quotes.map(quote => {
         return <li key={quote.id}><Quote quote={quote} users={state.users} chat={state.chat} /></li>
       })}
